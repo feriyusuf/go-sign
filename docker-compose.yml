@@ -1,17 +1,17 @@
 version: '3'
 services:
-  app:
-    container_name: go_sign_app
-    build: .
-    ports:
-      - ${API_PORT}:${API_PORT}
-    restart: on-failure
-    volumes:
-      - app:/usr/src/app/
-    depends_on:
-      - go_sign_pg
-    networks:
-      - go_sign_net
+#  app:
+#    container_name: go_sign_app
+#    build: .
+#    ports:
+#      - ${API_PORT}:${API_PORT}
+#    restart: on-failure
+#    volumes:
+#      - app:/usr/src/app/
+#    depends_on:
+#      - go_sign_pg
+#    networks:
+#      - go_sign_net
 
 
   go_sign_pg:
@@ -29,19 +29,19 @@ services:
     networks:
       - go_sign_net
     
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: pgadmin_container
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
-    depends_on:
-      - go_sign_pg
-    ports:
-      - "5050:80"
-    networks:
-      - go_sign_net
-    restart: unless-stopped
+#  pgadmin:
+#    image: dpage/pgadmin4
+#    container_name: pgadmin_container
+#    environment:
+#      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+#      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+#    depends_on:
+#      - go_sign_pg
+#    ports:
+#      - "5050:80"
+#    networks:
+#      - go_sign_net
+#    restart: unless-stopped
 
 volumes:
   app:
