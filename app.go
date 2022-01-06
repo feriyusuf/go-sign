@@ -1,7 +1,8 @@
 package main
 
 import (
-	"github.com/feriyusuf/go-sign/controllers"
+	"github.com/feriyusuf/go-sign/app/controllers"
+	"github.com/feriyusuf/go-sign/app/models_pg"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"log"
@@ -9,7 +10,7 @@ import (
 )
 
 func init() {
-	if err := godotenv.Load("../.env"); err != nil {
+	if err := godotenv.Load(".env"); err != nil {
 		log.Printf(".env tidak ditemukan")
 	}
 }
@@ -22,7 +23,7 @@ func main() {
 	router := gin.Default()
 
 	// Connect to postgres
-	//models_pg.ConnectDatabase(os.Getenv("DB_USER_PG"), os.Getenv("DB_PASSWORD_PG"), os.Getenv("DB_PORT_PG"), os.Getenv("DB_HOST_PG"), os.Getenv("DB_NAME_PG"))
+	models_pg.ConnectDatabase(os.Getenv("DB_USER_PG"), os.Getenv("DB_PASSWORD_PG"), os.Getenv("DB_PORT_PG"), os.Getenv("DB_HOST_PG"), os.Getenv("DB_NAME_PG"))
 
 	// API Versioning
 	v1 := router.Group("/api/v1")
