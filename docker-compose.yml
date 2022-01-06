@@ -1,0 +1,53 @@
+version: '3'
+services:
+#  app:
+#    container_name: go_sign_app
+#    build: .
+#    ports:
+#      - 8080:8080
+#    restart: on-failure
+#    volumes:
+#      - api:/usr/src/app/
+#    depends_on:
+#      - go_sign_pg
+#    networks:
+#      - go_sign_net
+
+
+  go_sign_pg:
+    image: postgres:latest
+    container_name: db_go_sign_pg
+    environment:
+      - POSTGRES_USER=${DB_USER_PG}  
+      - POSTGRES_PASSWORD=${DB_PASSWORD_PG}
+      - POSTGRES_DB=${DB_NAME_PG}
+      - DATABASE_HOST=${DB_HOST_PG} 
+    ports:
+      - '5432:5432'
+    volumes:
+      - database_postgres:/var/lib/postgresql/data
+    networks:
+      - go_sign_net
+    
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin_container
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    depends_on:
+      - go_sign_pg
+    ports:
+      - "5050:80"
+    networks:
+      - go_sign_net
+    restart: unless-stopped
+
+volumes:
+  api:
+  database_postgres:                  
+
+# Networks to be created to facilitate communication between containers
+networks:
+  go_sign_net:
+    driver: bridge
