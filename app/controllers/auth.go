@@ -8,7 +8,7 @@ import (
 type AuthController struct{}
 
 func (h *AuthController) Register(c *gin.Context) {
-	var data forms.RegisterUserCommand
+	var data forms.Register
 
 	if c.BindJSON(&data) != nil {
 		c.JSON(406, gin.H{"message": "name, username and password are required"})
@@ -20,5 +20,13 @@ func (h *AuthController) Register(c *gin.Context) {
 }
 
 func (h *AuthController) Login(c *gin.Context) {
+	var data forms.Login
+
+	if c.BindJSON(&data) != nil {
+		c.JSON(401, gin.H{"message": "username and password are required"})
+		c.Abort()
+		return
+	}
+
 	c.JSON(200, gin.H{"message": "You will be signed in"})
 }
