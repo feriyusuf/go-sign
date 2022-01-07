@@ -60,7 +60,15 @@ func (h *AuthController) Login(c *gin.Context) {
 		return
 	}
 
-	// TODO: GenerateHashPassword token
+	// Generate token
+	jwtToken, _, err := helpers.GenerateToken(input.Username)
 
-	c.JSON(200, gin.H{"message": "You will be signed in"})
+	if err != nil {
+		c.JSON(501, gin.H{"message": "Something went wrong, please try again later!"})
+		return
+	}
+
+	// TODO: Save session to mongodb
+
+	c.JSON(200, gin.H{"message": "Login Success!", "token": jwtToken})
 }
