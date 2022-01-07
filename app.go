@@ -31,6 +31,7 @@ func main() {
 		auth := new(controllers.AuthController)
 		v1.POST("/auth/register", auth.Register)
 		v1.POST("/auth/login", auth.Login)
+		v1.DELETE("/auth/logout", auth.Logout)
 	}
 
 	// Default handle for unknown url address
