@@ -19,7 +19,7 @@ func (h *AuthController) Register(c *gin.Context) {
 		return
 	}
 
-	// Search existing username
+	// Search existing user
 	var user models_pg.User
 	if err := models_pg.PGDB.Where(" username = ?", input.Username).First(&user).Error; err == nil {
 		c.JSON(403, gin.H{"message": "Username already exist"})
@@ -30,7 +30,7 @@ func (h *AuthController) Register(c *gin.Context) {
 	user = models_pg.User{
 		Username: input.Username,
 		Name:     input.Name,
-		Password: helpers.Generate([]byte(input.Password)),
+		Password: helpers.GenerateHashPassword([]byte(input.Password)),
 	}
 	models_pg.PGDB.Create(&user)
 
@@ -46,6 +46,21 @@ func (h *AuthController) Login(c *gin.Context) {
 		c.Abort()
 		return
 	}
+
+	// Search existing user
+	var user models_pg.User
+	if err := models_pg.PGDB.Where(" username = ?", input.Username).First(&user).Error; err != nil {
+		c.JSON(401, gin.H{"message": "User not found"})
+		return
+	}
+
+	// Compare registered password and login password
+	if err := helpers.ComparePassword([]byte(user.Password), []byte(input.Password)); err != nil {
+		c.JSON(401, gin.H{"message": "Incorrect Password"})
+		return
+	}
+
+	// TODO: GenerateHashPassword token
 
 	c.JSON(200, gin.H{"message": "You will be signed in"})
 }
