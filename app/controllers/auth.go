@@ -12,22 +12,29 @@ type AuthController struct{}
 func (h *AuthController) Register(c *gin.Context) {
 	var input forms.Register
 
+	// Body json validation
 	if c.BindJSON(&input) != nil {
 		c.JSON(406, gin.H{"message": "name, username and password are required"})
 		c.Abort()
 		return
 	}
 
-	// TODO: Check username exist
+	// Search existing username
+	var user models_pg.User
+	if err := models_pg.PGDB.Where(" username = ?", input.Username).First(&user).Error; err == nil {
+		c.JSON(403, gin.H{"message": "Username already exist"})
+		return
+	}
 
-	user := models_pg.User{
+	// Save to SQL database
+	user = models_pg.User{
 		Username: input.Username,
 		Name:     input.Name,
 		Password: helpers.Generate([]byte(input.Password)),
 	}
-
 	models_pg.PGDB.Create(&user)
 
+	// Positive Response
 	c.JSON(201, gin.H{"message": "Success registration"})
 }
 
