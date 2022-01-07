@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"github.com/feriyusuf/go-sign/app/forms"
+	"github.com/feriyusuf/go-sign/app/helpers"
 	"github.com/feriyusuf/go-sign/app/models_pg"
 	"github.com/gin-gonic/gin"
 )
@@ -17,7 +18,14 @@ func (h *AuthController) Register(c *gin.Context) {
 		return
 	}
 
-	user := models_pg.User{Username: input.Username, Name: input.Name}
+	// TODO: Check username exist
+
+	user := models_pg.User{
+		Username: input.Username,
+		Name:     input.Name,
+		Password: helpers.Generate([]byte(input.Password)),
+	}
+
 	models_pg.PGDB.Create(&user)
 
 	c.JSON(201, gin.H{"message": "Success registration"})
