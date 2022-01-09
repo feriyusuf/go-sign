@@ -2,17 +2,17 @@ package models_mongo
 
 import (
 	"context"
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"gopkg.in/mgo.v2/bson"
 	"time"
 )
 
 type Session struct {
-	ID        primitive.ObjectID `json:"_id,omitempty"`
-	Username  string             `json:"username"`
-	IsActive  bool               `json:"is_active"`
-	ExpiredAt time.Time          `json:"expired_at"`
-	CreatedAt time.Time          `json:"created_at"`
-	UpdatedAt time.Time          `json:"updated_at"`
+	ID        bson.ObjectId `json:"_id,omitempty" bson:"_id,omitempty"`
+	Username  string        `json:"username" bson:"username"`
+	IsActive  bool          `json:"is_active" bson:"is_active"`
+	ExpiredAt time.Time     `json:"expired_at" bson:"expired_at"`
+	CreatedAt time.Time     `json:"created_at" bson:"created_at"`
+	UpdatedAt time.Time     `json:"updated_at" bson:"updated_at"`
 }
 
 func CreateSession(username string, expiredAt time.Time) error {
