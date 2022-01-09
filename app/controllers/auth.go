@@ -3,8 +3,10 @@ package controllers
 import (
 	"github.com/feriyusuf/go-sign/app/forms"
 	"github.com/feriyusuf/go-sign/app/helpers"
+	"github.com/feriyusuf/go-sign/app/models_mongo"
 	"github.com/feriyusuf/go-sign/app/models_pg"
 	"github.com/gin-gonic/gin"
+	"log"
 )
 
 type AuthController struct{}
@@ -61,14 +63,22 @@ func (h *AuthController) Login(c *gin.Context) {
 	}
 
 	// Generate token
-	jwtToken, _, err := helpers.GenerateToken(bodyJson.Username)
+	jwtToken, expiredTime, err := helpers.GenerateToken(bodyJson.Username)
 
 	if err != nil {
 		c.JSON(501, gin.H{"message": "Something went wrong, please try again later!"})
 		return
 	}
 
-	// TODO: Save session to mongodb
+	// Save session to mongodb
+	err = models_mongo.CreateSession(bodyJson.Username, expiredTime)
+
+	if err != nil {
+		log.Printf("%s", err)
+
+		c.JSON(501, gin.H{"message": "Something went wrong, please try again later!"})
+		return
+	}
 
 	c.JSON(200, gin.H{"message": "Login Success!", "token": jwtToken})
 }
