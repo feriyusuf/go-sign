@@ -1,53 +1,74 @@
 version: '3'
 services:
-#  app:
-#    container_name: go_sign_app
-#    build: .
-#    ports:
-#      - ${API_PORT}:${API_PORT}
-#    restart: on-failure
-#    volumes:
-#      - app:/usr/src/app/
-#    depends_on:
-#      - go_sign_pg
-#    networks:
-#      - go_sign_net
+  #  app:
+  #    container_name: go_sign_app
+  #    build: .
+  #    ports:
+  #      - ${API_PORT}:${API_PORT}
+  #    restart: on-failure
+  #    volumes:
+  #      - app:/usr/src/app/
+  #    depends_on:
+  #      - go_sign_pg
+  #      - go_sign_mongo
+  #    networks:
+  #      - go_sign_net
 
 
   go_sign_pg:
     image: postgres:latest
     container_name: db_go_sign_pg
     environment:
-      - POSTGRES_USER=${DB_USER_PG}  
+      - POSTGRES_USER=${DB_USER_PG}
       - POSTGRES_PASSWORD=${DB_PASSWORD_PG}
       - POSTGRES_DB=${DB_NAME_PG}
-      - DATABASE_HOST=${DB_HOST_PG} 
+      - DATABASE_HOST=${DB_HOST_PG}
     ports:
       - '5432:5432'
     volumes:
       - database_postgres:/var/lib/postgresql/data
     networks:
       - go_sign_net
-    
-#  pgadmin:
-#    image: dpage/pgadmin4
-#    container_name: pgadmin_container
-#    environment:
-#      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-#      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
-#    depends_on:
-#      - go_sign_pg
-#    ports:
-#      - "5050:80"
-#    networks:
-#      - go_sign_net
-#    restart: unless-stopped
+
+
+  go_sign_mongo:
+    image: mongo:4.2.3-bionic
+    container_name: db_go_sign_mongo
+    ports:
+      - '27017:27017'
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${DB_USER_MONGO}
+      - MONGO_INITDB_ROOT_PASSWORD=${DB_PASSWORD_MONGO}
+      - MONGO_INITDB_DATABASE=${DB_NAME_MONGO}
+    volumes:
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - mongodb:/var/lib/mongodb/data
+      - mongoconfig:/var/lib/mongodb/data/configdb
+    networks:
+      - go_sign_net
+
+
+  #  pgadmin:
+  #    image: dpage/pgadmin4
+  #    container_name: pgadmin_container
+  #    environment:
+  #      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+  #      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+  #    depends_on:
+  #      - go_sign_pg
+  #    ports:
+  #      - "5050:80"
+  #    networks:
+  #      - go_sign_net
+  #    restart: unless-stopped
 
 volumes:
   app:
-  database_postgres:                  
+  database_postgres:
+  mongodb:
+  mongoconfig:
 
-# Networks to be created to facilitate communication between containers
+  # Networks to be created to facilitate communication between containers
 networks:
   go_sign_net:
     driver: bridge
