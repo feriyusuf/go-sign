@@ -30,3 +30,14 @@ func CreateSession(username string, expiredAt time.Time) error {
 
 	return err
 }
+
+func DestroySession(username string) error {
+	var sessionCollection = OpenCollection(Client, "session")
+	var ctx, _ = context.WithTimeout(context.Background(), 100*time.Second)
+	filter := bson.M{"username": bson.M{"$eq": username}}
+	update := bson.M{"$set": bson.M{"is_active": false}}
+
+	_, err := sessionCollection.UpdateMany(ctx, filter, update)
+
+	return err
+}
