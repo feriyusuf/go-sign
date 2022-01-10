@@ -56,5 +56,10 @@ func IsActiveSession(token string) (bool, error) {
 
 	err := sessionCollection.FindOne(ctx, filter).Decode(&session)
 
+	// Token already expired
+	if time.Now().After(session.ExpiredAt) {
+		return false, nil
+	}
+
 	return session.IsActive, err
 }

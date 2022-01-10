@@ -107,6 +107,8 @@ func (h *AuthController) Logout(c *gin.Context) {
 	isSessionActive, _ := models_mongo.IsActiveSession(headerToken)
 
 	if !isSessionActive {
+		// Set all active session to false if any
+		models_mongo.DestroySession(username)
 		c.JSON(401, gin.H{"message": "Unknown token"})
 		return
 	}
@@ -140,6 +142,8 @@ func (h *AuthController) Refresh(c *gin.Context) {
 	isSessionActive, _ := models_mongo.IsActiveSession(headerToken)
 
 	if !isSessionActive {
+		// Set all active session to false if any
+		models_mongo.DestroySession(username)
 		c.JSON(401, gin.H{"message": "Unknown token"})
 		return
 	}
