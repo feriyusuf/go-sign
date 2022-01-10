@@ -6,6 +6,7 @@ import (
 	"github.com/feriyusuf/go-sign/app/models_mongo"
 	"github.com/feriyusuf/go-sign/app/models_pg"
 	"github.com/gin-gonic/gin"
+	"log"
 )
 
 type AuthController struct{}
@@ -77,7 +78,7 @@ func (h *AuthController) Login(c *gin.Context) {
 	}
 
 	// Save session to mongodb
-	err = models_mongo.CreateSession(bodyJson.Username, expiredTime)
+	err = models_mongo.CreateSession(bodyJson.Username, expiredTime, jwtToken)
 
 	if err != nil {
 		c.JSON(501, gin.H{"message": "Something went wrong, please try again later!"})
@@ -96,7 +97,7 @@ func (h *AuthController) Logout(c *gin.Context) {
 		return
 	}
 
-	_, err := helpers.DecodeToken(headerToken)
+	username, err := helpers.DecodeToken(headerToken)
 
 	// Unrecognized token
 	if err != nil {
@@ -104,9 +105,20 @@ func (h *AuthController) Logout(c *gin.Context) {
 		return
 	}
 
-	// TODO: Search session to mongodb by username, if not exist alredy destroyed
+	isSessionActive, _ := models_mongo.IsActiveSession(headerToken)
 
-	// TODO: Update status active or not to session
+	log.Printf("is Active %b", isSessionActive)
+
+	if !isSessionActive {
+		c.JSON(401, gin.H{"message": "Unknown token"})
+		return
+	}
+
+	err = models_mongo.DestroySession(username)
+	if err != nil {
+		c.JSON(501, gin.H{"message": "Something went wrong, please try again later!"})
+		return
+	}
 
 	c.JSON(201, gin.H{"message": "Success logout"})
 }
