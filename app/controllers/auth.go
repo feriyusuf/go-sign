@@ -122,3 +122,49 @@ func (h *AuthController) Logout(c *gin.Context) {
 
 	c.JSON(201, gin.H{"message": "Success logout"})
 }
+
+func (h *AuthController) Refresh(c *gin.Context) {
+	headerToken := c.Request.Header.Get("token")
+
+	// There's no headers' token
+	if headerToken == "" {
+		c.JSON(401, gin.H{"message": "Token is required"})
+		return
+	}
+
+	username, err := helpers.DecodeToken(headerToken)
+
+	// Unrecognized token
+	if err != nil {
+		c.JSON(401, gin.H{"message": "Unknown token"})
+		return
+	}
+
+	isSessionActive, _ := models_mongo.IsActiveSession(headerToken)
+
+	log.Printf("is Active %b", isSessionActive)
+
+	if !isSessionActive {
+		c.JSON(401, gin.H{"message": "Unknown token"})
+		return
+	}
+
+	err = models_mongo.DestroySession(username)
+	if err != nil {
+		c.JSON(501, gin.H{"message": "Something went wrong, please try again later!"})
+		return
+	}
+
+	// Generate token
+	jwtToken, expiredTime, err := helpers.GenerateToken(username)
+
+	// Save session to mongodb
+	err = models_mongo.CreateSession(username, expiredTime, jwtToken)
+
+	if err != nil {
+		c.JSON(501, gin.H{"message": "Something went wrong, please try again later!"})
+		return
+	}
+
+	c.JSON(200, gin.H{"message": "Success refresh token", "token": jwtToken})
+}

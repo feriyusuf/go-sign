@@ -32,6 +32,7 @@ func main() {
 		v1.POST("/auth/register", auth.Register)
 		v1.POST("/auth/login", auth.Login)
 		v1.DELETE("/auth/logout", auth.Logout)
+		v1.GET("/auth/refresh", auth.Refresh)
 	}
 
 	// Default handle for unknown url address
