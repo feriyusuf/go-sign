@@ -12,7 +12,7 @@ import (
 )
 
 func DBInstance() *mongo.Client {
-	MongoDb := "mongodb://feriyusuf:p4ssw0rd@localhost:27017/go_sign"
+	MongoDb := "mongodb://feriyusuf:p4ssw0rd@go_sign_mongo:27017/go_sign"
 
 	client, err := mongo.NewClient(options.Client().ApplyURI(MongoDb))
 	if err != nil {

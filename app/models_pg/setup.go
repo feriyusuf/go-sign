@@ -13,7 +13,7 @@ func ConnectDatabase(DbUser, DbPassword, DbPort, DbHost, DbName string) {
 	database, err := gorm.Open("postgres", DBURL)
 
 	if err != nil {
-		panic("Failed to connect to database!")
+		panic("Failed to connect to postgres database at " + DBURL)
 	}
 
 	database.AutoMigrate(&User{})

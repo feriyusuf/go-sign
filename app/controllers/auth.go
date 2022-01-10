@@ -6,6 +6,7 @@ import (
 	"github.com/feriyusuf/go-sign/app/models_mongo"
 	"github.com/feriyusuf/go-sign/app/models_pg"
 	"github.com/gin-gonic/gin"
+	"log"
 )
 
 type AuthController struct{}
@@ -72,6 +73,7 @@ func (h *AuthController) Login(c *gin.Context) {
 	// Destroy session (if any)
 	err = models_mongo.DestroySession(bodyJson.Username)
 	if err != nil {
+		log.Printf("Error Destroy Session %s", err)
 		c.JSON(501, gin.H{"message": "Something went wrong, please try again later!"})
 		return
 	}
@@ -80,7 +82,8 @@ func (h *AuthController) Login(c *gin.Context) {
 	err = models_mongo.CreateSession(bodyJson.Username, expiredTime, jwtToken)
 
 	if err != nil {
-		c.JSON(501, gin.H{"message": "Something went wrong, please try again later!"})
+		log.Printf("Error Destroy Create %s", err)
+		c.JSON(501, gin.H{"message": "[Mongo] Something went wrong, please try again later!"})
 		return
 	}
 
