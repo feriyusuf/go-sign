@@ -36,7 +36,7 @@ COPY --from=builder /app/main .
 COPY --from=builder /app/.env .       
 
 # Expose port 8080 to the outside world
-#EXPOSE 8080
+EXPOSE 8081
 EXPOSE 5432
 EXPOSE 27017
 

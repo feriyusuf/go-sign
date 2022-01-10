@@ -6,7 +6,6 @@ import (
 	"github.com/feriyusuf/go-sign/app/models_mongo"
 	"github.com/feriyusuf/go-sign/app/models_pg"
 	"github.com/gin-gonic/gin"
-	"log"
 )
 
 type AuthController struct{}
@@ -107,8 +106,6 @@ func (h *AuthController) Logout(c *gin.Context) {
 
 	isSessionActive, _ := models_mongo.IsActiveSession(headerToken)
 
-	log.Printf("is Active %b", isSessionActive)
-
 	if !isSessionActive {
 		c.JSON(401, gin.H{"message": "Unknown token"})
 		return
@@ -141,8 +138,6 @@ func (h *AuthController) Refresh(c *gin.Context) {
 	}
 
 	isSessionActive, _ := models_mongo.IsActiveSession(headerToken)
-
-	log.Printf("is Active %b", isSessionActive)
 
 	if !isSessionActive {
 		c.JSON(401, gin.H{"message": "Unknown token"})

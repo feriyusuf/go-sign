@@ -3,7 +3,6 @@ package models_mongo
 import (
 	"context"
 	"gopkg.in/mgo.v2/bson"
-	"log"
 	"time"
 )
 
@@ -56,8 +55,6 @@ func IsActiveSession(token string) (bool, error) {
 	}
 
 	err := sessionCollection.FindOne(ctx, filter).Decode(&session)
-
-	log.Printf("FYZ ::: %s", session)
 
 	return session.IsActive, err
 }
