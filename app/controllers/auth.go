@@ -22,14 +22,14 @@ func (h *AuthController) Register(c *gin.Context) {
 	}
 
 	// Search existing user
-	var user models_pg.User
+	var user models_pg.ComUser
 	if err := models_pg.PGDB.Where(" username = ?", bodyJson.Username).First(&user).Error; err == nil {
 		c.JSON(403, gin.H{"message": "Username already exist"})
 		return
 	}
 
 	// Save to SQL database
-	user = models_pg.User{
+	user = models_pg.ComUser{
 		Username: bodyJson.Username,
 		Name:     bodyJson.Name,
 		Password: helpers.GenerateHashPassword([]byte(bodyJson.Password)),
@@ -37,7 +37,7 @@ func (h *AuthController) Register(c *gin.Context) {
 	models_pg.PGDB.Create(&user)
 
 	// Positive Response
-	c.JSON(201, gin.H{"message": "Success registration"})
+	c.JSON(201, gin.H{"message": "Success Bitch"})
 }
 
 func (h *AuthController) Login(c *gin.Context) {
@@ -50,9 +50,9 @@ func (h *AuthController) Login(c *gin.Context) {
 	}
 
 	// Search existing user
-	var user models_pg.User
+	var user models_pg.ComUser
 	if err := models_pg.PGDB.Where(" username = ?", bodyJson.Username).First(&user).Error; err != nil {
-		c.JSON(401, gin.H{"message": "User not found"})
+		c.JSON(401, gin.H{"message": "ComUser not found"})
 		return
 	}
 

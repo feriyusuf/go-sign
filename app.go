@@ -23,7 +23,13 @@ func main() {
 	router := gin.Default()
 
 	// Connect to postgres
-	models_pg.ConnectDatabase(os.Getenv("DB_USER_PG"), os.Getenv("DB_PASSWORD_PG"), os.Getenv("DB_PORT_PG"), os.Getenv("DB_HOST_PG"), os.Getenv("DB_NAME_PG"))
+	models_pg.ConnectDatabase(
+		os.Getenv("DB_USER_PG"),
+		os.Getenv("DB_PASSWORD_PG"),
+		os.Getenv("DB_PORT_PG"),
+		os.Getenv("DB_HOST_PG"),
+		os.Getenv("DB_NAME_PG"),
+	)
 
 	// API Versioning
 	v1 := router.Group("/api/v1")
