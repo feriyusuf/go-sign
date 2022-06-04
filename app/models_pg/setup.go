@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"os"
 )
 
 var PGDB *gorm.DB
@@ -20,14 +21,16 @@ func ConnectDatabase(DbUser, DbPassword, DbPort, DbHost, DbName string) {
 		panic("Failed to connect to postgres database at " + DBURL)
 	}
 
-	database.AutoMigrate(
-		&ComMenu{},
-		&ComMenuRole{},
-		&ComRole{},
-		&ComRoleUser{},
-		&ComUser{},
-	)
+	autoMigrate := os.Getenv("DB_AUTO_MIGRATE")
+	autoPopulate := os.Getenv("DB_AUTO_POPULATE")
+
+	if autoMigrate == "TRUE" {
+		PostgresAutoMigrate(database)
+	}
+
+	if autoPopulate == "TRUE" {
+		PostgresAutoPopulate(database)
+	}
 
 	PGDB = database
-
 }
