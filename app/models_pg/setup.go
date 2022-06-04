@@ -21,9 +21,11 @@ func ConnectDatabase(DbUser, DbPassword, DbPort, DbHost, DbName string) {
 	}
 
 	database.AutoMigrate(
-		&ComUser{},
+		&ComMenu{},
+		&ComMenuRole{},
 		&ComRole{},
-		&ComUserRole{},
+		&ComRoleUser{},
+		&ComUser{},
 	)
 
 	PGDB = database

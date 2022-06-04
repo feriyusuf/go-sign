@@ -2,13 +2,13 @@ package models_pg
 
 import "time"
 
-func (ComUserRole) TableName() string {
-	return "com_user_role"
+func (ComRoleUser) TableName() string {
+	return "com_role_user"
 }
 
-type ComUserRole struct {
-	UserId   uint    `json:"user_id"`
-	RoleId   uint    `json:"role_id"`
+type ComRoleUser struct {
+	UserId   uint    `gorm:"index" json:"user_id"`
+	RoleId   uint    `gorm:"index" json:"role_id"`
 	ComUser  ComUser `gorm:"foreignKey:UserId;"`
 	ComeRole ComRole `gorm:"foreignKey:RoleId;"`
 
