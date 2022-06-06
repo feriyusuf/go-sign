@@ -1,6 +1,10 @@
 package main
 
 import (
+	"time"
+)
+
+import (
 	"github.com/feriyusuf/go-sign/app/controllers"
 	"github.com/feriyusuf/go-sign/app/models_pg"
 	"github.com/gin-gonic/gin"
@@ -22,14 +26,15 @@ func goDotEnvVariable(key string) string {
 func main() {
 	router := gin.Default()
 
+	// Set local time zone from .env
+	localTime, err := time.LoadLocation(os.Getenv("TIMEZONE"))
+	if err != nil {
+		panic("Can't set time zone")
+	}
+	time.Local = localTime
+
 	// Connect to postgres
-	models_pg.ConnectDatabase(
-		os.Getenv("DB_USER_PG"),
-		os.Getenv("DB_PASSWORD_PG"),
-		os.Getenv("DB_PORT_PG"),
-		os.Getenv("DB_HOST_PG"),
-		os.Getenv("DB_NAME_PG"),
-	)
+	models_pg.ConnectDatabase()
 
 	// API Versioning
 	v1 := router.Group("/api/v1")

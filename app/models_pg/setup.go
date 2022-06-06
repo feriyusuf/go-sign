@@ -16,7 +16,7 @@ type Tabler interface {
 	TableName() string
 }
 
-func ConnectDatabase(DbUser, DbPassword, DbPort, DbHost, DbName string) {
+func ConnectDatabase() {
 	sqlTimeZone := os.Getenv("TIMEZONE")
 	sqlUser := os.Getenv("DB_USER_PG")
 	sqlPassword := os.Getenv("DB_PASSWORD_PG")
