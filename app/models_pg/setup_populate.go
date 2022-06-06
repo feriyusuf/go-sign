@@ -1,6 +1,8 @@
 package models_pg
 
-import "github.com/feriyusuf/go-sign/app/helpers"
+import (
+	"github.com/feriyusuf/go-sign/app/helpers"
+)
 
 const Superadmin = "SUPERADMIN"
 const SuperAdminPassword = "pass123"
@@ -24,7 +26,7 @@ func PostgresAutoPopulate() {
 		PGDB.Create(&superAdminRole)
 	}
 
-	// TODO: Assign all access to super admin (if any)
+	// Assign all access to super admin (if any)
 
 	// Create User as Superadmin
 	PGDB.Where("username = ?", SuperAdminUsername).Find(&superAdminUser)

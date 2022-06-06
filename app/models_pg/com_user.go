@@ -14,6 +14,7 @@ type ComUser struct {
 
 	CreatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
 	UpdatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
-	CreatedBy uint      `json:"created_by"`
-	UpdatedBy uint      `json:"updated_by"`
+
+	CreatedBy uint `json:"created_by"`
+	UpdatedBy uint `json:"updated_by"`
 }

@@ -2,6 +2,7 @@ package models_pg
 
 import (
 	"database/sql/driver"
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -26,13 +27,15 @@ func (ComMenu) TableName() string {
 }
 
 type ComMenu struct {
-	ID   uint   `json:"id" gorm:"primary_key"`
-	Name string `json:"name"`
-	Icon string `json:"icon"`
+	ID       uint   `json:"id" gorm:"primary_key"`
+	Name     string `json:"name"`
+	Icon     string `json:"icon"`
+	IsActive bool   `json:"is_active" gorm:"index;default:true;"`
 
-	ParentID uint      `json:"parent_id" gorm:"index"`
-	Children []ComMenu `gorm:"foreignkey:ParentID"`
-	Type     Type      `json:"type_" gorm:"index"`
+	ParentID  uint           `json:"parent_id" gorm:"index"`
+	Children  []ComMenu      `gorm:"foreignkey:ParentID"`
+	Type      Type           `json:"type_" gorm:"index"`
+	DeletedAt gorm.DeletedAt `json:"deleted_at"`
 
 	UiPath  string `json:"ui_path"`
 	ApiPath string `json:"api_path"`
@@ -41,4 +44,5 @@ type ComMenu struct {
 	UpdatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
 	CreatedBy uint      `json:"created_by"`
 	UpdatedBy uint      `json:"updated_by"`
+	DeletedBy uint      `json:"deleted_by"`
 }
