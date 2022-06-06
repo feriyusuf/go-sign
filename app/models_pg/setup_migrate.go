@@ -1,13 +1,16 @@
 package models_pg
 
-import "gorm.io/gorm"
+import (
+	"github.com/feriyusuf/go-sign/app/models_pg/commons"
+	"gorm.io/gorm"
+)
 
 func PostgresAutoMigrate(database *gorm.DB) {
 	database.AutoMigrate(
-		&ComMenu{},
-		&ComMenuRole{},
-		&ComRole{},
-		&ComRoleUser{},
-		&ComUser{},
+		&commons.ComMenu{},
+		&commons.ComMenuRole{},
+		&commons.ComRole{},
+		&commons.ComRoleUser{},
+		&commons.ComUser{},
 	)
 }

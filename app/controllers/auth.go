@@ -5,6 +5,7 @@ import (
 	"github.com/feriyusuf/go-sign/app/helpers"
 	"github.com/feriyusuf/go-sign/app/models_mongo"
 	"github.com/feriyusuf/go-sign/app/models_pg"
+	"github.com/feriyusuf/go-sign/app/models_pg/commons"
 	"github.com/gin-gonic/gin"
 	"log"
 )
@@ -22,14 +23,14 @@ func (h *AuthController) Register(c *gin.Context) {
 	}
 
 	// Search existing user
-	var user models_pg.ComUser
+	var user commons.ComUser
 	if err := models_pg.PGDB.Where(" username = ?", bodyJson.Username).First(&user).Error; err == nil {
 		c.JSON(403, gin.H{"message": "Username already exist"})
 		return
 	}
 
 	// Save to SQL database
-	user = models_pg.ComUser{
+	user = commons.ComUser{
 		Username: bodyJson.Username,
 		Name:     bodyJson.Name,
 		Password: helpers.GenerateHashPassword([]byte(bodyJson.Password)),
@@ -50,7 +51,7 @@ func (h *AuthController) Login(c *gin.Context) {
 	}
 
 	// Search existing user
-	var user models_pg.ComUser
+	var user commons.ComUser
 	if err := models_pg.PGDB.Where(" username = ?", bodyJson.Username).First(&user).Error; err != nil {
 		c.JSON(401, gin.H{"message": "ComUser not found"})
 		return

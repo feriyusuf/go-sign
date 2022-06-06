@@ -1,21 +1,23 @@
-package models_pg
+package commons
 
 import (
 	"gorm.io/gorm"
 	"time"
 )
 
-func (ComRoleUser) TableName() string {
-	return "com_role_user"
+func (ComMenuRole) TableName() string {
+	return "com_menu_role"
 }
 
-// ComRoleUser Only one use has one role
-type ComRoleUser struct {
-	UserId   uint `gorm:"index;primaryKey;autoIncrement:false" json:"user_id"`
+// ComMenuRole Only one role has one menu
+type ComMenuRole struct {
+	MenuId   uint `gorm:"index;primaryKey;autoIncrement:false" json:"menu_id"`
 	RoleId   uint `gorm:"index;primaryKey;autoIncrement:false" json:"role_id"`
+	Read     bool `json:"read_"`
+	Write    bool `json:"write_"`
 	IsActive bool `json:"is_active" gorm:"index;default:true;"`
 
-	ComUser  ComUser `gorm:"foreignKey:UserId;"`
+	ComMenu  ComMenu `gorm:"foreignKey:MenuId;"`
 	ComeRole ComRole `gorm:"foreignKey:RoleId;"`
 
 	CreatedAt time.Time      `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`

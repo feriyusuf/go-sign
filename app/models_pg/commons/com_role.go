@@ -1,4 +1,4 @@
-package models_pg
+package commons
 
 import (
 	"gorm.io/gorm"
