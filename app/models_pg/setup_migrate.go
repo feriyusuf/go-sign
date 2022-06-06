@@ -1,6 +1,6 @@
 package models_pg
 
-import "github.com/jinzhu/gorm"
+import "gorm.io/gorm"
 
 func PostgresAutoMigrate(database *gorm.DB) {
 	database.AutoMigrate(

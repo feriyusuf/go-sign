@@ -6,9 +6,11 @@ func (ComRoleUser) TableName() string {
 	return "com_role_user"
 }
 
+// ComRoleUser Only one use has one role
 type ComRoleUser struct {
-	UserId   uint    `gorm:"index" json:"user_id"`
-	RoleId   uint    `gorm:"index" json:"role_id"`
+	UserId uint `gorm:"index;primaryKey;autoIncrement:false" json:"user_id"`
+	RoleId uint `gorm:"index;primaryKey;autoIncrement:false" json:"role_id"`
+
 	ComUser  ComUser `gorm:"foreignKey:UserId;"`
 	ComeRole ComRole `gorm:"foreignKey:RoleId;"`
 
