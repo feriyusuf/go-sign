@@ -3,6 +3,7 @@ package models_pg
 import (
 	"github.com/feriyusuf/go-sign/app/helpers"
 	"github.com/feriyusuf/go-sign/app/models_pg/commons"
+	"github.com/feriyusuf/go-sign/app/script/migration"
 )
 
 const Superadmin = "SUPERADMIN"
@@ -25,6 +26,17 @@ func PostgresAutoPopulate() {
 		}
 
 		PGDB.Create(&superAdminRole)
+	}
+
+	// Populate default menus
+	tx := PGDB.Exec(migration.SqlDefaultMenusInit)
+
+	if tx.Error != nil {
+		panic("Something went wrong while creating menu(s)")
+	}
+
+	if tx.Error == nil {
+		// TODO: Assign all menu to SUPERADMIN ROLE
 	}
 
 	// Assign all access to super admin (if any)
@@ -64,4 +76,5 @@ func PostgresAutoPopulate() {
 
 		PGDB.Create(&publicUserRole)
 	}
+
 }

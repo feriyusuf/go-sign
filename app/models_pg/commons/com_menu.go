@@ -28,7 +28,8 @@ func (ComMenu) TableName() string {
 
 type ComMenu struct {
 	ID       uint   `json:"id" gorm:"primary_key"`
-	Name     string `json:"name"`
+	Name     string `json:"name" gorm:"index;"`
+	Label    string `json:"label"`
 	Icon     string `json:"icon"`
 	IsActive bool   `json:"is_active" gorm:"index;default:true;"`
 
