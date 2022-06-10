@@ -1,26 +1,9 @@
 package commons
 
 import (
-	"database/sql/driver"
 	"gorm.io/gorm"
 	"time"
 )
-
-type Type string
-
-const (
-	SCREEN Type = "SCREEN"
-	ACTION Type = "ACTION"
-)
-
-func (e *Type) Scan(value interface{}) error {
-	*e = Type(value.([]byte))
-	return nil
-}
-
-func (e Type) Value() (driver.Value, error) {
-	return string(e), nil
-}
 
 func (ComMenu) TableName() string {
 	return "com_menu"
@@ -35,7 +18,7 @@ type ComMenu struct {
 
 	ParentID  uint           `json:"parent_id" gorm:"index"`
 	Children  []ComMenu      `gorm:"foreignkey:ParentID"`
-	Type      Type           `json:"type_" gorm:"index"`
+	Type      string         `json:"type_m" gorm:"index"`
 	DeletedAt gorm.DeletedAt `json:"deleted_at"`
 
 	UiPath  string `json:"ui_path"`

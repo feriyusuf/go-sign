@@ -1,6 +1,7 @@
 package models_pg
 
 import (
+	"fmt"
 	"github.com/feriyusuf/go-sign/app/helpers"
 	"github.com/feriyusuf/go-sign/app/models_pg/commons"
 	"github.com/feriyusuf/go-sign/app/script/migration"
@@ -36,7 +37,7 @@ func PostgresAutoPopulate() {
 	}
 
 	if tx.Error == nil {
-		// TODO: Assign all menu to SUPERADMIN ROLE
+		AssignMenus(0, superAdminRole.ID)
 	}
 
 	// Assign all access to super admin (if any)
@@ -77,4 +78,38 @@ func PostgresAutoPopulate() {
 		PGDB.Create(&publicUserRole)
 	}
 
+}
+
+func AssignMenus(parent uint, roleId uint) {
+	query := `parent_id is null`
+
+	if parent != 0 {
+		query = fmt.Sprintf("parent_id = %v", parent)
+	}
+
+	rows, err := PGDB.Debug().Model(&commons.ComMenu{}).Where(query).Rows()
+	defer rows.Close()
+
+	if err != nil {
+		panic("Something went wrong while assign menu(s)")
+	}
+
+	for rows.Next() {
+		var menu commons.ComMenu
+		PGDB.ScanRows(rows, &menu)
+
+		result := PGDB.Debug().Create(&commons.ComMenuRole{
+			RoleId:   roleId,
+			ComMenu:  menu,
+			IsActive: true,
+			Read:     true,
+			Write:    true,
+		})
+
+		if result.Error != nil {
+			panic("Something went wrong while assign menu(s)")
+		}
+
+		AssignMenus(menu.ID, roleId)
+	}
 }
