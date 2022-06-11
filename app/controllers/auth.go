@@ -29,6 +29,13 @@ func (h *AuthController) Register(c *gin.Context) {
 		return
 	}
 
+	// Find public role
+	var role commons.ComRole
+	if err := models_pg.PGDB.Where(" name = ?", models_pg.PublicUser).First(&role).Error; err != nil {
+		log.Fatalf("Error get public role %v", err)
+		c.JSON(501, gin.H{"message": "Internal Server Error"})
+	}
+
 	// Save to SQL database
 	user = commons.ComUser{
 		Username: bodyJson.Username,
@@ -37,8 +44,20 @@ func (h *AuthController) Register(c *gin.Context) {
 	}
 	models_pg.PGDB.Create(&user)
 
+	// Assign as public user
+	roleUser := commons.ComRoleUser{
+		UserId:   user.ID,
+		RoleId:   role.ID,
+		IsActive: true,
+	}
+
+	result := models_pg.PGDB.Create(&roleUser)
+	if result.Error != nil {
+		log.Printf("Error %v", result.Error)
+	}
+
 	// Positive Response
-	c.JSON(201, gin.H{"message": "Success Bitch"})
+	c.JSON(201, gin.H{"message": "Success Create User"})
 }
 
 func (h *AuthController) Login(c *gin.Context) {

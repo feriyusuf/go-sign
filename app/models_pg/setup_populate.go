@@ -40,8 +40,6 @@ func PostgresAutoPopulate() {
 		AssignMenus(0, superAdminRole.ID)
 	}
 
-	// Assign all access to super admin (if any)
-
 	// Create User as Superadmin
 	PGDB.Where("username = ?", SuperAdminUsername).Find(&superAdminUser)
 	if superAdminUser.ID == 0 {
