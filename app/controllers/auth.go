@@ -86,6 +86,7 @@ func (h *AuthController) Login(c *gin.Context) {
 	jwtToken, expiredTime, err := helpers.GenerateToken(bodyJson.Username)
 
 	if err != nil {
+		log.Fatalf("Error generate token%v", err)
 		c.JSON(501, gin.H{"message": "Something went wrong, please try again later!"})
 		return
 	}

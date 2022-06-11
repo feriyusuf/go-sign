@@ -12,16 +12,18 @@ import (
 )
 
 func DBInstance() *mongo.Client {
-	MongoDb := "mongodb://feriyusuf:p4ssw0rd@go_sign_mongo:27017/go_sign"
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
-	client, err := mongo.NewClient(options.Client().ApplyURI(MongoDb))
+	// TODO: Get from .env
+	client, err := mongo.NewClient(
+		options.Client().ApplyURI("mongodb://feriyusuf:p4ssw0rd@localhost:27017/go_sign"),
+	)
+
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-
-	defer cancel()
 	err = client.Connect(ctx)
 	if err != nil {
 		log.Fatal(err)
@@ -31,9 +33,11 @@ func DBInstance() *mongo.Client {
 	return client
 }
 
-var Client *mongo.Client = DBInstance()
+var Client = DBInstance()
 
 func OpenCollection(client *mongo.Client, collectionName string) *mongo.Collection {
-	var collection *mongo.Collection = client.Database(os.Getenv("DB_NAME_MONGO")).Collection(collectionName)
+	var collection = client.Database(os.Getenv("DB_NAME_MONGO")).
+		Collection(collectionName)
+
 	return collection
 }
