@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/feriyusuf/go-sign/app/helpers"
 	"time"
 )
 
@@ -37,13 +38,17 @@ func main() {
 	models_pg.ConnectDatabase()
 
 	// API Versioning
-	v1 := router.Group("/api/v1")
+	withoutAuthorization := router.Group("/api/v1")
+	withAuthorization := router.Group("/api/v1", helpers.TokenAuthentication())
+
 	{
 		auth := new(controllers.AuthController)
-		v1.POST("/auth/register", auth.Register)
-		v1.POST("/auth/login", auth.Login)
-		v1.DELETE("/auth/logout", auth.Logout)
-		v1.GET("/auth/refresh", auth.Refresh)
+		withoutAuthorization.POST("/auth/register", auth.Register)
+		withoutAuthorization.POST("/auth/login", auth.Login)
+
+		// With middleware
+		withAuthorization.DELETE("/auth/logout", auth.Logout)
+		withAuthorization.GET("/auth/refresh", auth.Refresh)
 	}
 
 	// Default handle for unknown url address
