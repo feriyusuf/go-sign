@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"context"
 	"github.com/feriyusuf/go-sign/app/forms"
 	"github.com/feriyusuf/go-sign/app/helpers"
 	"github.com/feriyusuf/go-sign/app/models_mongo"
@@ -112,32 +113,11 @@ func (h *AuthController) Login(c *gin.Context) {
 }
 
 func (h *AuthController) Logout(c *gin.Context) {
-	headerToken := c.Request.Header.Get("token")
+	username := c.GetString("username")
 
-	// There's no headers' token
-	if headerToken == "" {
-		c.JSON(401, gin.H{"message": "Token is required"})
-		return
-	}
+	helpers.CallUserContext(context.Background())
 
-	username, err := helpers.DecodeToken(headerToken)
-
-	// Unrecognized token
-	if err != nil {
-		c.JSON(401, gin.H{"message": "Unknown token"})
-		return
-	}
-
-	isSessionActive, _ := models_mongo.IsActiveSession(headerToken)
-
-	if !isSessionActive {
-		// Set all active session to false if any
-		models_mongo.DestroySession(username)
-		c.JSON(401, gin.H{"message": "Unknown token"})
-		return
-	}
-
-	err = models_mongo.DestroySession(username)
+	err := models_mongo.DestroySession(username)
 	if err != nil {
 		c.JSON(501, gin.H{"message": "Something went wrong, please try again later!"})
 		return

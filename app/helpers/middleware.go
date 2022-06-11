@@ -2,10 +2,12 @@ package helpers
 
 import (
 	"github.com/feriyusuf/go-sign/app/models_mongo"
+	"github.com/feriyusuf/go-sign/app/models_pg/commons"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
-func TokenAuthentication() gin.HandlerFunc {
+func TokenAuthentication(PGDB *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		headerToken := c.Request.Header.Get("token")
 
@@ -34,6 +36,17 @@ func TokenAuthentication() gin.HandlerFunc {
 			return
 		}
 
+		// Check user to database
+		user := commons.ComUser{}
+		PGDB.Where("username = ?", username).First(&user)
+
+		if user.ID == 0 {
+			c.JSON(401, gin.H{"message": "User not found"})
+			c.Abort()
+			return
+		}
+
 		c.Set("username", username)
+		c.Set("user_id", user.ID)
 	}
 }

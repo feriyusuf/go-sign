@@ -39,7 +39,7 @@ func main() {
 
 	// API Versioning
 	withoutAuthorization := router.Group("/api/v1")
-	withAuthorization := router.Group("/api/v1", helpers.TokenAuthentication())
+	withAuthorization := router.Group("/api/v1", helpers.TokenAuthentication(models_pg.PGDB))
 
 	{
 		auth := new(controllers.AuthController)
